@@ -24,20 +24,18 @@ public class skedJobTriggerHandler {
     
     @future (callout=true) 
     public static void onCalloutResponse(Set<Id> conIds) {
+        String countryCode = 'US';
+        String message = 'Trial Message for SalesHood Hands on Exercise 2';
         try {
-            List<Contact> conDetailList = [SELECT id, Phone,LastName FROM Contact WHERE Id IN : conIds LIMIT 1];
+            List<Contact> conDetailList = [SELECT Id, Phone,LastName 
+                                           FROM Contact 
+                                           WHERE Id IN : conIds LIMIT 1];
             if (conDetailList.size() > 0) {
                 String phone = conDetailList[0].Phone;
-                String countryCode = 'US';
-                String message = 'Trial Message for SalesHood Hands on Exercise 2';
-                sked.ApiResult.Sms response = sked.SkeduloAPI.sms(phone, countryCode, message);
-                if (response.isSuccess()) {
-                    System.debug('Message:'+response); 
-                } else {
-                    System.debug('Error: ' + response.getError());
-                } 
+                sked.ApiResult.Sms response = sked.SkeduloAPI.sms(phone, countryCode, message); 
             }
         } catch(Exception e) {
+            //Exception can be logged as well
             System.debug('The following exception has occurred: ' + e.getMessage());
         }
         
